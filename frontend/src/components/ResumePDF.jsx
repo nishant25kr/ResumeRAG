@@ -8,7 +8,7 @@ const ResumePDF = () => {
   const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen mt-20 bg-gray-50 p-6">
       <button
         onClick={() => navigate(-1)}
         className="mb-4 bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-lg"

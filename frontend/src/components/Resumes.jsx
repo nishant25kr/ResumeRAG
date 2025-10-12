@@ -17,7 +17,7 @@ const Resumes = () => {
       try {
         const res = await axios.get(
           `${backendURL}/api/resume/getallresume`,
-          {}, 
+          {},
           { withCredentials: true }
         );
         setResumes(res.data);
@@ -49,6 +49,10 @@ const Resumes = () => {
       setLoading(false);
     }
   };
+
+  const uploadResume = async () => {
+    console.log("hi")
+  }
 
   // Summary cards data
   const totalResumes = resumes.length;
@@ -85,19 +89,51 @@ const Resumes = () => {
               </div>
             </div>
 
-            <div className="group relative bg-white/70 backdrop-blur-sm border border-orange-100 rounded-2xl p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="group relative bg-gradient-to-br from-white/80 to-orange-50/50 backdrop-blur-sm border-2 border-dashed border-orange-200 hover:border-orange-400 rounded-2xl p-8 text-center hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+              <div className="relative z-10 space-y-4">
+                {/* Upload Icon */}
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                 </div>
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Pending Reviews</h3>
-                <p className="text-4xl font-bold text-gray-800 mb-2">{pendingResumes}</p>
-                <p className="text-sm text-gray-500">Awaiting processing</p>
+
+                {/* Text Content */}
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold text-gray-800 group-hover:text-orange-600 transition-colors">
+                    Upload Your Resume
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Drag & drop or click to browse
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Supports PDF, DOC, DOCX (Max 5MB)
+                  </p>
+                </div>
+
+                {/* File Input */}
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => handleFileUpload(e)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+
+                {/* Custom Button */}
+                <label className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-full hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Choose File
+                </label>
               </div>
+
+              {/* Decorative Elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-200/20 rounded-full blur-3xl -z-10 group-hover:bg-orange-300/30 transition-colors" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-100/20 rounded-full blur-2xl -z-10 group-hover:bg-orange-200/30 transition-colors" />
             </div>
+
+
 
             <div className="group relative bg-white/70 backdrop-blur-sm border border-green-100 rounded-2xl p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 sm:col-span-2 lg:col-span-1">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -157,7 +193,7 @@ const Resumes = () => {
             <h3 className="text-xl font-bold text-gray-800">Resume Database</h3>
             <p className="text-gray-600 mt-1">Manage and review all uploaded resumes</p>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -223,7 +259,7 @@ const Resumes = () => {
                         {r.score ? (
                           <div className="flex items-center">
                             <div className="w-12 h-2 bg-gray-200 rounded-full overflow-hidden mr-3">
-                              <div 
+                              <div
                                 className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300"
                                 style={{ width: `${Math.min(r.score * 100, 100)}%` }}
                               ></div>
@@ -235,14 +271,12 @@ const Resumes = () => {
                         )}
                       </td>
                       <td className="py-6 px-8">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                          r.score 
-                            ? "bg-green-100 text-green-700 border border-green-200" 
-                            : "bg-orange-100 text-orange-700 border border-orange-200"
-                        }`}>
-                          <div className={`w-2 h-2 rounded-full mr-2 ${
-                            r.score ? "bg-green-500" : "bg-orange-500"
-                          }`}></div>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${r.score
+                          ? "bg-green-100 text-green-700 border border-green-200"
+                          : "bg-orange-100 text-orange-700 border border-orange-200"
+                          }`}>
+                          <div className={`w-2 h-2 rounded-full mr-2 ${r.score ? "bg-green-500" : "bg-orange-500"
+                            }`}></div>
                           {r.score ? "Processed" : "Pending"}
                         </span>
                       </td>
@@ -284,7 +318,7 @@ const Resumes = () => {
         {resumes.length > 0 && (
           <div className="mt-8 text-center pb-8">
             <p className="text-gray-500">
-              Showing <span className="font-semibold text-gray-700">{resumes.length}</span> resume{resumes.length !== 1 ? 's' : ''} 
+              Showing <span className="font-semibold text-gray-700">{resumes.length}</span> resume{resumes.length !== 1 ? 's' : ''}
               {search && <span> matching "<span className="font-semibold text-blue-600">{search}</span>"</span>}
             </p>
           </div>

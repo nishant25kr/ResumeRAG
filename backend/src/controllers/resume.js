@@ -1,7 +1,10 @@
 import embedding from "../ai/agent.js";
 import Resume from "../models/Resume.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+
 import extractText from "../utils/extractText.js";
 import path from "path";
+
 
 
 function cosineSimilarity(vecA, vecB) {
@@ -34,6 +37,10 @@ const uploadResume = async (req, res) => {
         }
 
         const embeddingVector = response[0].values;
+
+        // const result = await uploadOnCloudinary(`uploads/resumes/${req.file.filename}`)
+
+        // console.log("Result",result.url)
 
         const newResume = new Resume(
             {
