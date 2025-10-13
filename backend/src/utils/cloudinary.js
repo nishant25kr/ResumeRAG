@@ -17,11 +17,10 @@ const uploadOnCloudinary = async (localFilePath) => {
 
         console.log("Uploading:", localFilePath);
 
-        const ext = path.extname(localFilePath).toLowerCase();
-        const isImage = [".jpg", ".jpeg", ".png", ".gif", ".webp"].includes(ext);
-
         const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: isImage ? "image" : "raw",
+            resource_type: "auto",
+            use_filename: true,
+            unique_filename: false
         });
 
         console.log("Upload successful:", response);

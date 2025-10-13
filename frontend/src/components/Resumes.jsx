@@ -50,9 +50,55 @@ const Resumes = () => {
     }
   };
 
-  const uploadResume = async () => {
-    console.log("hi")
-  }
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Please upload only PDF or Word documents.");
+      return;
+    }
+
+    // Validate file size (optional)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert("File size should not exceed 5MB.");
+      return;
+    }
+
+    try {
+      // Create FormData
+      const formData = new FormData();
+      formData.append("pdf", file);
+
+      // Send to backend using Axios
+      const res = await axios.post(`${backendURL}/api/resume/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      alert("Resume uploaded successfully!");
+
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Failed to upload. Please try again.");
+    }
+  };
+
 
   // Summary cards data
   const totalResumes = resumes.length;

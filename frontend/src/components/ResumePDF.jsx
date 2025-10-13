@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 
 const ResumePDF = () => {
   const { id } = useParams();
-  console.log(id)
   const navigate = useNavigate();
   const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 

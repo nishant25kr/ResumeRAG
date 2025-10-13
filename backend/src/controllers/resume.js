@@ -5,8 +5,6 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import extractText from "../utils/extractText.js";
 import path from "path";
 
-
-
 function cosineSimilarity(vecA, vecB) {
     const dot = vecA.reduce((sum, val, i) => sum + val * vecB[i], 0);
     const magA = Math.sqrt(vecA.reduce((sum, val) => sum + val * val, 0));
@@ -50,7 +48,6 @@ const uploadResume = async (req, res) => {
             }
         );
         await newResume.save();
-
 
         res.json({ success: true, message: "Resume uploaded and embedded!", embeddingLength: embedding.length });
     } catch (err) {
