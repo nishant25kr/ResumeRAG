@@ -20,7 +20,6 @@ const uploadResume = async (req, res) => {
 
         const text = await extractText(req.file);
 
-
         if (!text || text.trim() === "") {
             return res.status(400).json({ success: false, message: "Extracted text is empty" });
         }
@@ -36,20 +35,31 @@ const uploadResume = async (req, res) => {
 
         const embeddingVector = response[0].values;
 
-        // const result = await uploadOnCloudinary(`uploads/resumes/${req.file.filename}`)
-
-        // console.log("Result",result.url)
-
-        const newResume = new Resume(
-            {
-                text: "resume",
-                embedding: embeddingVector,
-                pdfPath: `uploads/resumes/${req.file.filename}`,
-            }
+        // Simple skill extraction for MVP
+        const commonSkills = ["React", "Node.js", "Python", "JavaScript", "AWS", "Docker", "MongoDB", "SQL", "TypeScript", "Tailwind"];
+        const extractedSkills = commonSkills.filter(skill => 
+            text.toLowerCase().includes(skill.toLowerCase())
         );
+
+        const newResume = new Resume({
+            text: text,
+            embedding: embeddingVector,
+            pdfPath: `uploads/resumes/${req.file.filename}`,
+            metadata: {
+                filename: req.file.originalname,
+                uploadedAt: new Date()
+            },
+            status: "ready",
+            skills: extractedSkills
+        });
+
         await newResume.save();
 
-        res.json({ success: true, message: "Resume uploaded and embedded!", embeddingLength: embedding.length });
+        res.json({ 
+            success: true, 
+            message: "Resume uploaded and processed!", 
+            data: { id: newResume._id, skills: extractedSkills }
+        });
     } catch (err) {
         console.error("Upload error:", err);
         res.status(500).json({ success: false, message: err.message || "Resume upload failed" });
@@ -113,9 +123,67 @@ const openResume = async (req, res) => {
   }
 };
 
+const getStats = async (req, res) => {
+  try {
+    const totalResumes = await Resume.countDocuments();
+    
+    // Status distribution
+    const statusCounts = await Resume.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } }
+    ]);
+
+    // Daily uploads for last 14 days
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+    
+    const dailyUploads = await Resume.aggregate([
+      { $match: { "metadata.uploadedAt": { $gte: fourteenDaysAgo } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$metadata.uploadedAt" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]);
+
+    // Top skills aggregation (assuming skills array is populated)
+    const topSkills = await Resume.aggregate([
+      { $unwind: "$skills" },
+      { $group: { _id: "$skills", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 }
+    ]);
+
+    // Calculate processed today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const processedToday = await Resume.countDocuments({ 
+        "metadata.uploadedAt": { $gte: today },
+        status: "ready" 
+    });
+
+    res.json({
+      success: true,
+      data: {
+        totalResumes,
+        processedToday,
+        statusDistribution: statusCounts,
+        dailyUploads,
+        topSkills,
+        avgMatchScore: 0.85 // Placeholder for now
+      }
+    });
+  } catch (err) {
+    console.error("Stats Error:", err);
+    res.status(500).json({ success: false, error: "Failed to fetch stats" });
+  }
+};
+
 export {
     uploadResume,
     getResume,
     openResume,
-    getallResume
+    getallResume,
+    getStats
 };

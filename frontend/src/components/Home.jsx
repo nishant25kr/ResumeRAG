@@ -1,226 +1,222 @@
 import React, { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Zap, 
+  Activity, 
+  ShieldCheck, 
+  ChevronRight, 
+  ArrowUpRight,
+  Sparkles,
+  Lock,
+  Globe,
+  PieChart
+} from "lucide-react";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
 
-  const handleLoginLogout = () => {
-    navigate("/login");
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
   };
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    }
+  };
 
   return (
-    <div className="bg-white min-h-screen overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="bg-white dark:bg-gray-900 min-h-screen overflow-hidden transition-colors duration-500">
+      {/* Dynamic Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-blue-100/30 to-purple-100/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-indigo-100/20 to-blue-100/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-50/20 to-pink-50/20 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-100/40 dark:bg-indigo-900/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-100/30 dark:bg-purple-900/10 rounded-full blur-[140px] animate-pulse delay-1000"></div>
       </div>
 
-      {/* Hero Section */}
-      <section className="relative flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-6 py-20 md:py-32 min-h-screen">
-        {/* Left Content */}
-        <div className={`flex-1 mb-16 md:mb-0 transform transition-all duration-1000 ease-out ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-        }`}>
-          {/* Premium Badge */}
-          <div className="inline-flex items-center bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-full px-6 py-2 mb-8 shadow-sm">
-            <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mr-3 animate-pulse"></div>
-            <span className="text-sm font-semibold text-blue-700">AI-Powered Recruitment Platform</span>
-          </div>
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10"
+      >
+        {/* Hero Section */}
+        <section className="flex flex-col lg:flex-row justify-between items-center max-w-7xl mx-auto px-6 py-20 lg:py-32 min-h-[90vh]">
+          {/* Left Content */}
+          <div className="flex-1 lg:pr-12 text-center lg:text-left">
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 mb-8 mx-auto lg:mx-0">
+              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span className="text-xs font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-300">Next-Gen Talent Intelligence</span>
+            </motion.div>
 
-          {/* Main Heading */}
-          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-[1.1]">
-            <span className="block">Intelligent</span>
-            <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              ResumeRAG
-            </span>
-            <span className="block text-4xl md:text-5xl font-bold text-gray-700 mt-2">
-              Revolution
-            </span>
-          </h1>
-
-          {/* Enhanced Description */}
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl leading-relaxed font-medium">
-            Transform your recruitment process with our cutting-edge AI platform. 
-            <span className="text-gray-800 font-semibold"> Analyze, rank, and manage resumes</span> with 
-            unprecedented accuracy and efficiency. Built for the future of talent acquisition.
-          </p>
-
-          {/* Feature Highlights */}
-         
-
-          {/* Admin Notice */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 mb-10">
-            <div className="flex items-start space-x-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-2">Admin Access Required</h3>
-                <p className="text-amber-700">
-                  Secure administrator authentication is required to access the resume dashboard 
-                  and manage candidate profiles with enterprise-grade privacy controls.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Enhanced CTA Button */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button 
-              onClick={handleLoginLogout} 
-              className="group relative inline-flex items-center justify-center bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 text-white font-bold px-10 py-5 rounded-2xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+            <motion.h1 
+              variants={itemVariants}
+              className="text-6xl md:text-8xl font-black text-gray-900 dark:text-white mb-8 leading-[0.9] tracking-tighter"
             >
-              <svg className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
-              </svg>
-              <span className="text-xl">Admin Access Portal</span>
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
+              Hiring, <br />
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-rose-600 bg-clip-text text-transparent">
+                Accelerated.
+              </span>
+            </motion.h1>
 
-            <button className="group inline-flex items-center justify-center bg-white hover:bg-gray-50 text-gray-700 font-semibold px-8 py-5 rounded-2xl border border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl transition-all duration-300">
-              <svg className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span className="text-lg">Learn More</span>
-            </button>
+            <motion.p 
+              variants={itemVariants}
+              className="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+            >
+              ResumeIQ Hub is the world's first RAG-powered recruitment engine. 
+              Find your next 10x developer from a million resumes in milliseconds.
+            </motion.p>
+
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-16"
+            >
+              <Link 
+                to="/login"
+                className="group relative px-10 py-5 bg-gray-900 dark:bg-indigo-600 text-white rounded-[2rem] font-black text-lg overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-gray-200 dark:shadow-none"
+              >
+                <div className="relative z-10 flex items-center gap-2">
+                  Launch Portal <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </Link>
+              <button className="px-10 py-5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-900 dark:text-white rounded-[2rem] font-bold text-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm">
+                Request Demo
+              </button>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="flex items-center justify-center lg:justify-start gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+              <Globe className="w-8 h-8 text-gray-400" />
+              <div className="h-6 w-px bg-gray-200"></div>
+              <Activity className="w-8 h-8 text-gray-400" />
+              <div className="h-6 w-px bg-gray-200"></div>
+              <ShieldCheck className="w-8 h-8 text-gray-400" />
+            </motion.div>
           </div>
 
-          {/* Trust Indicators */}
-          <div className="flex items-center space-x-8 mt-12 text-sm text-gray-500">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <span>99.9% Uptime</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-              <span>Enterprise Grade</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
-              <span>GDPR Compliant</span>
-            </div>
+          {/* Right Content - Visual Elements */}
+          <div className="flex-1 mt-20 lg:mt-0 relative w-full max-w-2xl">
+              <motion.div 
+                animate={{ 
+                  y: [0, -20, 0],
+                  rotate: [0, 1, 0]
+                }}
+                transition={{ 
+                  duration: 6, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="relative"
+              >
+                {/* Main Card Reveal */}
+                <div className="bg-white dark:bg-gray-800 rounded-[3rem] p-10 shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+                   <div className="absolute top-0 right-0 p-4">
+                      <Zap className="w-8 h-8 text-indigo-500 animate-pulse" />
+                   </div>
+                   <div className="space-y-6">
+                      <div className="w-20 h-2 bg-indigo-100 dark:bg-gray-700 rounded-full"></div>
+                      <div className="w-full h-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"></div>
+                      <div className="w-3/4 h-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"></div>
+                      <div className="pt-8 grid grid-cols-2 gap-4">
+                          <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl">
+                             <p className="text-2xl font-black text-indigo-600 dark:text-indigo-400">99.8%</p>
+                             <p className="text-[10px] uppercase font-bold text-gray-400">Precision</p>
+                          </div>
+                          <div className="p-4 bg-rose-50 dark:bg-rose-900/20 rounded-2xl">
+                             <p className="text-2xl font-black text-rose-600 dark:text-rose-400">~2ms</p>
+                             <p className="text-[10px] uppercase font-bold text-gray-400">Latency</p>
+                          </div>
+                      </div>
+                   </div>
+                   
+                   {/* Floating Tooltip */}
+                   <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 1, type: "spring" }}
+                      className="absolute -bottom-4 -right-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 p-6 rounded-3xl shadow-2xl rotate-3"
+                   >
+                      <p className="text-xs font-bold leading-tight">AI Agent <br />Analyzing Pipeline...</p>
+                   </motion.div>
+                </div>
+              </motion.div>
           </div>
-        </div>
+        </section>
 
-        {/* Right Enhanced Illustration */}
-        <div className={`flex-1 flex justify-center transform transition-all duration-1000 ease-out delay-300 ${
-          isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
-        }`}>
-          <div className="relative">
-            {/* Floating Elements */}
-            <div className="absolute -top-8 -left-8 w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl shadow-xl animate-bounce delay-1000 flex items-center justify-center">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-              </svg>
-            </div>
-            <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl shadow-lg animate-bounce delay-500 flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-            </div>
-            <div className="absolute top-1/2 -right-12 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg shadow-md animate-bounce delay-700 flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-              </svg>
-            </div>
-
-            {/* Main Image Container */}
-            <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 group">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/9422/9422363.png"
-                alt="AI Resume Analysis Illustration"
-                className="w-80 md:w-96 drop-shadow-2xl group-hover:scale-105 transition-transform duration-500 relative z-10"
-              />
-              
-              {/* Decorative Elements */}
-              <div className="absolute inset-0 rounded-3xl border border-white/20 pointer-events-none"></div>
-            </div>
-
-            {/* Stats Cards */}
-            <div className="absolute -bottom-8 -left-12 bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-800">98%</p>
-                  <p className="text-sm text-gray-600">Accuracy Rate</p>
-                </div>
+        {/* Features Section */}
+        <section className="py-24 bg-gray-50 dark:bg-gray-900/50 transition-colors duration-500">
+           <div className="max-w-7xl mx-auto px-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                 {[
+                   {
+                     icon: Lock,
+                     title: "Enterprise Shield",
+                     desc: "Military-grade encryption for candidate data with role-based access control.",
+                     color: "text-blue-600"
+                   },
+                   {
+                     icon: PieChart,
+                     title: "Deep Analytics",
+                     desc: "Understand skill gaps and candidate potential through 5D vector analysis.",
+                     color: "text-purple-600"
+                   },
+                   {
+                     icon: Globe,
+                     title: "Global Search",
+                     desc: "Unified search across all your document stores and third-party integrations.",
+                     color: "text-emerald-600"
+                   }
+                 ].map((feature, idx) => (
+                   <motion.div 
+                    key={idx}
+                    whileHover={{ y: -10 }}
+                    className="group flex flex-col items-center text-center p-8 bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl transition-all"
+                   >
+                      <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-gray-900 dark:group-hover:bg-indigo-600 transition-colors">
+                        <feature.icon className={`w-8 h-8 ${feature.color} group-hover:text-white transition-colors`} />
+                      </div>
+                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4">{feature.title}</h3>
+                      <p className="text-gray-500 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
+                   </motion.div>
+                 ))}
               </div>
-            </div>
+           </div>
+        </section>
+      </motion.div>
 
-            <div className="absolute -top-12 -right-16 bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-800">2.5s</p>
-                  <p className="text-sm text-gray-600">Avg. Processing</p>
-                </div>
+      {/* Admin Access Panel */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="max-w-7xl mx-auto px-6 mb-24"
+      >
+        <div className="relative p-12 bg-indigo-600 rounded-[3rem] overflow-hidden">
+           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+              <div className="text-center md:text-left">
+                  <h2 className="text-4xl font-black text-white mb-4">Ready to scale?</h2>
+                  <p className="text-indigo-100 text-lg font-medium max-w-md">
+                    Join 500+ top enterprises using ResumeIQ Hub to build their future teams today.
+                  </p>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Preview Section */}
-      <section className="relative py-20 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose <span className="text-blue-600">ResumeRAG</span>?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Experience the future of recruitment with our AI-powered platform designed for modern HR professionals.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: "M13 10V3L4 14h7v7l9-11h-7z",
-                title: "Lightning Fast",
-                description: "Process thousands of resumes in seconds with our advanced AI algorithms."
-              },
-              {
-                icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-                title: "Smart Analytics",
-                description: "Get detailed insights and rankings based on job requirements and candidate qualifications."
-              },
-              {
-                icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
-                title: "Secure & Private",
-                description: "Enterprise-grade security ensures your candidate data remains protected and confidential."
-              }
-            ].map((feature, index) => (
-              <div key={index} className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-blue-200">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={feature.icon}></path>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              <div className="flex gap-4">
+                 <button className="px-8 py-4 bg-white text-indigo-600 rounded-2xl font-bold hover:bg-gray-50 transition-all flex items-center gap-2">
+                    Get Started <ChevronRight className="w-5 h-5" />
+                 </button>
               </div>
-            ))}
-          </div>
+           </div>
         </div>
-      </section>
+      </motion.div>
     </div>
   );
 };

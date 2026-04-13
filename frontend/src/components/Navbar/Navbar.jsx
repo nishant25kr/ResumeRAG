@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { 
+  Sun, 
+  Moon, 
+  LogOut, 
+  LayoutDashboard, 
+  FileText, 
+  Menu,
+  X,
+  Zap
+} from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
 
 const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
-
-    const handleLoginLogout = () => {
-        localStorage.removeItem("User");
-        navigate("/");
-    };
+    const location = useLocation();
+    const { isDarkMode, toggleTheme } = useTheme();
 
     const handleLogout = () => {
         localStorage.removeItem("User");
@@ -17,117 +26,135 @@ const Navbar = () => {
         navigate("/");
     }
 
-     const handleLogin = () => {
-      
-        navigate("/login");
-    }
-
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("User"));
-        if(user){
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
-        }
-    },);
+        setIsLoggedIn(!!user);
+    }, [location]);
 
-    // Handle scroll effect
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
-        };
+        const handleScroll = () => setIsScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const navLinks = [
+        { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+        { name: 'Resumes', path: '/resumes', icon: FileText },
+    ];
+
     return (
-        <nav className={`
-            fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out
+        <nav 
+          aria-label="Main Navigation"
+          className={`
+            fixed top-0 left-0 w-full z-50 transition-all duration-500
             ${isScrolled 
-                ? 'bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-100/50' 
-                : 'bg-white shadow-sm'
+                ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl py-2' 
+                : 'bg-white dark:bg-gray-900 py-4'
             }
+            border-b border-gray-100 dark:border-gray-800
         `}>
             <div className="max-w-7xl mx-auto px-6">
-                <div className="flex justify-between items-center h-20">
-                    {/* Enhanced Company Brand */}
-                    <div className="flex items-center space-x-4">
-                        <div className="relative">
-                            {/* Logo Icon */}
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer">
-                                <svg className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                            </div>
+                <div className="flex justify-between items-center h-16">
+                    {/* Brand */}
+                    <Link to="/" className="flex items-center space-x-3 group outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg p-1">
+                        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform">
+                            <Zap className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex flex-col">
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                                ResumeRAG
+                            <h1 className="text-xl font-black text-gray-900 dark:text-white leading-none">
+                                ResumeIQ
                             </h1>
-                            <p className="text-xs text-gray-500 font-medium -mt-1">AI-Powered Recruitment</p>
+                            <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-600 dark:text-indigo-400">Hub</span>
                         </div>
+                    </Link>
+
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center space-x-1 lg:space-x-4">
+                        {isLoggedIn && navLinks.map((link) => (
+                            <Link 
+                                key={link.path}
+                                to={link.path}
+                                className={`
+                                    flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all
+                                    ${location.pathname === link.path 
+                                        ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' 
+                                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'}
+                                `}
+                            >
+                                <link.icon className="w-4 h-4" />
+                                {link.name}
+                            </Link>
+                        ))}
                     </div>
 
-                    {/* Navigation Links (for larger screens) */}
-                   
+                    {/* Right side Actions */}
+                    <div className="flex items-center space-x-2 lg:space-x-4">
+                        {/* Theme Toggle */}
+                        <button
+                          onClick={toggleTheme}
+                          aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                          className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:ring-2 focus:ring-indigo-500 outline-none"
+                        >
+                          {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                        </button>
 
-                    {/* User Profile & Auth Section */}
-                    <div className="flex items-center space-x-4">
                         {isLoggedIn ? (
-                            <div className="flex items-center space-x-4">
-                                {/* User Avatar */}
-                                <div className="hidden sm:flex items-center space-x-3">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
-                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                        </svg>
-                                    </div>
-                                    <div className="hidden lg:block">
-                                        <p className="text-sm font-semibold text-gray-800">Admin User</p>
-                                        <p className="text-xs text-gray-500">Administrator</p>
-                                    </div>
-                                </div>
-
-                                {/* Logout Button */}
+                            <div className="flex items-center space-x-2 lg:space-x-4 border-l border-gray-100 dark:border-gray-800 pl-4 lg:pl-4">
                                 <button
                                     onClick={handleLogout}
-                                    className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                    aria-label="Logout"
+                                    className="p-2.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all"
                                 >
-                                    <svg className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                    </svg>
-                                    <span>Logout</span>
+                                    <LogOut className="w-5 h-5" />
                                 </button>
+                                <div className="hidden sm:block">
+                                   <div className="w-10 h-10 rounded-full border-2 border-indigo-600 p-0.5">
+                                      <img 
+                                        src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" 
+                                        alt="User Avatar"
+                                        className="w-full h-full rounded-full object-cover"
+                                      />
+                                   </div>
+                                </div>
                             </div>
                         ) : (
-                            <button
-                                onClick={handleLogin}
-                                className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                            <Link
+                                to="/login"
+                                className="bg-gray-900 dark:bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all"
                             >
-                                <svg className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                                </svg>
-                                <span>Login</span>
-                            </button>
+                                Login
+                            </Link>
                         )}
 
-                        {/* Mobile Menu Button */}
-                        {isLoggedIn && (
-                            <button className="md:hidden w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors duration-200">
-                                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                                </svg>
-                            </button>
-                        )}
+                        {/* Mobile Menu Toggle */}
+                        <button 
+                          className="md:hidden p-2 text-gray-600 dark:text-gray-300"
+                          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                          aria-expanded={isMobileMenuOpen}
+                          aria-label="Toggle Menu"
+                        >
+                          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                        </button>
                     </div>
                 </div>
-
-                {/* Mobile Navigation Menu (hidden by default, you can add state to toggle) */}
-                
             </div>
 
-            {/* Subtle bottom border with gradient */}
-            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+            {/* Mobile Menu Dropdown */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 p-4 space-y-2 animate-in slide-in-from-top duration-300">
+                    {isLoggedIn && navLinks.map((link) => (
+                        <Link 
+                            key={link.path}
+                            to={link.path}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white font-bold"
+                        >
+                            <link.icon className="w-5 h-5 text-indigo-600" />
+                            {link.name}
+                        </Link>
+                    ))}
+                </div>
+            )}
         </nav>
     );
 };

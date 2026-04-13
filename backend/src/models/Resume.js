@@ -16,6 +16,15 @@ const ResumeSchema = new mongoose.Schema({
             default: Date.now 
         },
     },
+    status: {
+        type: String,
+        enum: ["pending", "processing", "ready", "failed"],
+        default: "ready"
+    },
+    skills: {
+        type: [String],
+        default: []
+    },
     isSortlisted:{
         type:Boolean,
         default:false
